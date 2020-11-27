@@ -5,17 +5,22 @@
 #include <stdlib.h> 
 #include <arpa/inet.h> 
 #include <unistd.h> 
-#include <string.h> 
+#include <string.h>
+#include <pthread.h>
 #define PORT 80
    
 int main(int argc, char const *argv[]) 
 { 
+    //typedef const struct addr *customStr;
     struct sockaddr_in iTserver; //
     int val = 1;
     int itexClient; //
-    char* message; //
+    char* sentMessage; //
     itexClient = socket(AF_INET, SOCK_STREAM, 0);
     char serverReply [4000];
+    size_t totalLength = 0;
+    FILE *file;
+
     //
     if (itexClient == -1)
     {
@@ -35,8 +40,9 @@ int main(int argc, char const *argv[])
     return 0;
 
     //
-    message = "GET/HTTP/1.1\r\n\r\n";
-    if(send(itexClient, message, strlen(message), sizeof(iTserver)) == -1)
+    sentMessage = "GET/HTTP/1.1\r\n\r\n";//message = "GET /download/pdfurl-guide.pdf HTTP/1.1\r\nHost: www.axmag.com\r\n\r\n Connection: keep-alive\r\n\r\n Keep-Alive: 300\r\n";
+
+    if(send(itexClient, sentMessage, strlen(sentMessage), sizeof(iTserver)) == -1)
     {
         puts("connection error, message not sent!");
     }
@@ -45,20 +51,29 @@ int main(int argc, char const *argv[])
         printf("Message delivered!");
     }
     
-    //
-    if(recv(itexClient, serverReply, sizeof(serverReply), 0) < 0)
+    //to recieve data
+    while (1)
+    {
+        int fileRec = recv(itexClient, serverReply, sizeof(serverReply), 0);
+    
+    if(fileRec < 0)
     {
        put("recv failed");
+       break;
     }
     else 
     printf("Data receipt Successful");
-
-   //alternative data read method
-    if (read(itexClient, serverReply, sizeof(serverReply))) == 0
+     totalLength += fileRec;
+     fwrite(itexClient, fileRec, sizeof(fileRec), file);
+    
+    if (totalLength >= fileLength)
+    }
+    //alternative data read method
+    if (read(itexClient, serverReply, sizeof(serverReply)) == 0)
     {
         put("data has been read");
     }
-
+//gcc -pthread sourcefilename.c
+close(itexClient);
     return 0;
 } 
-
