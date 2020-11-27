@@ -10,7 +10,6 @@
    
 int main(int argc, char const *argv[]) 
 { 
-    //typedef const struct addr *customStr;
     struct sockaddr_in iTserver; //
     int val = 1;
     int itexClient; //
@@ -43,7 +42,7 @@ int main(int argc, char const *argv[])
     }
     else
     {
-        printf("Data delivered!");
+        printf("Message delivered!");
     }
     
     //
@@ -53,6 +52,12 @@ int main(int argc, char const *argv[])
     }
     else 
     printf("Data receipt Successful");
+
+   //alternative data read method
+    if (read(itexClient, serverReply, sizeof(serverReply))) == 0
+    {
+        put("data has been read");
+    }
 
     return 0;
 } 
