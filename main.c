@@ -132,7 +132,7 @@ void taskWaiting(const char *downDirec, Context *context) {
             }
         }
 
-        snprintf(filename, FileSize, "%s/%s", downDirec, fileURL);
+        snprintf(filename, FileSize + 2, "%s/%s", downDirec, fileURL);
         char *data = httpGetRequest(task->result);
         if (data) {
             size_t length = task->result->length - (data - task->result->data);
