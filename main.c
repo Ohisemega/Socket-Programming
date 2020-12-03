@@ -30,7 +30,7 @@ void createDirectory(const char *dir)
 {
    struct stat st = {0};
 
-   if(stat(&dir, &st))
+   if(stat(dir, &st))
    {
        int record = mkdir(dir, 0700);
        checkerMain(record, "mkdir: failed");
